@@ -22,34 +22,25 @@ print(gamma * epsilon)
 ################
 # PART 2
 ################
-def decode_oxygen(all_values, pos):
+def decode(all_values, pos, type='oxygen'):
     values = set(all_values)
     if len(values) > 1:
         ones = set(v for v in values if v[pos] == '1')
         zeros = values - ones
-        if len(ones) >= len(zeros):
-            return decode_oxygen(ones, pos+1)
+        if type == 'oxygen':
+            return decode(ones, pos+1, type=type) \
+                    if len(ones) >= len(zeros) else decode(zeros, pos+1, type=type)
         else:
-            return decode_oxygen(zeros, pos+1)
+            return decode(ones, pos+1, type=type) \
+                    if len(ones) < len(zeros) else decode(zeros, pos+1, type=type)
     else:
         return int(min(values).strip(),2)
 
-def decode_co2(all_values, pos):
-    values = set(all_values)
-    if len(values) > 1:
-        ones = set(v for v in values if v[pos] == '1')
-        zeros = values - ones
-        if len(ones) < len(zeros):
-            return decode_co2(ones, pos+1)
-        else:
-            return decode_co2(zeros, pos+1)
-    else:
-        return int(min(values).strip(),2)
 
 with open('day_3_input.txt') as file:
     all_values = file.readlines()
-oxygen = decode_oxygen(all_values,0)
-co2 = decode_co2(all_values, 0)
+oxygen = decode(all_values, 0, type='oxygen')
+co2 = decode(all_values, 0, type='co2')
 print('Part 2 ', oxygen * co2)
 
 # %%
