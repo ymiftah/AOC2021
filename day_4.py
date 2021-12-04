@@ -4,9 +4,9 @@ import numpy as np
 class Board(object):
     def __init__(self, np_array, tag):
         self.table = np_array
+        self.tag = tag
         self.checked = np.zeros_like(np_array)
         self.won = False
-        self.tag = tag
         self.score = 0
 
     def _check_number(self, number):
@@ -41,15 +41,17 @@ class BingoGame(object):
 
     def play_game(self):
         for p in self.plays:
-            for i, b in enumerate(self.boards):
+            for b in self.boards:
                 score = b.draw_number(p)
                 if score > 0:
-                    return i, score
+                    return b.tag, score
 
     def play_to_lose(self):
         n_in_play = self.n_tables
         for p in self.plays:
-            for b in (b for b in self.boards if not b.won):
+            for b in self.boards:
+                if b.won:
+                    continue
                 score = b.draw_number(p)
                 if score > 0:
                     n_in_play -= 1
@@ -58,11 +60,11 @@ class BingoGame(object):
 #%%
 print('PART 1')
 board, score = BingoGame('day_4_input.txt').play_game()
-print('Winner is board {} with score {}'.format(board+1, score))
+print('Winner is board {} with score {}'.format(board, score))
 
 # %%
 
 print('PART 2')
 board, score = BingoGame('day_4_input.txt').play_to_lose()
-print('Loser is board {} with score {}'.format(board+1, score))
+print('Loser is board {} with score {}'.format(board, score))
 # %%
